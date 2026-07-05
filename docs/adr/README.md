@@ -13,4 +13,4 @@ PBI 実装時に行った設計判断を MADR (Markdown Any Decision Records) �
 
 | 番号 | タイトル | ステータス | 関連 PBI | 日付 |
 |------|---------|-----------|---------|------|
-| <!-- ADR 作成時に行を追加 --> | | | | |
+| ADR-0001 | [RHDH Local は公式リポジトリを clone して利用する](0001-clone-rhdh-local-repository.md) | Accepted | PBI-1 | 2026-07-05 |

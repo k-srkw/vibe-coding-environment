@@ -1,6 +1,6 @@
 # PBI-1: RHDH Local 環境のセットアップ
 
-## ステータス: 未着手
+## ステータス: 完了
 
 ## 依存
 
@@ -12,25 +12,31 @@ RHDH Local をローカルで起動し、カスタム Software Template を登�
 
 ## 受け入れ条件
 
-- [ ] `podman compose up` で RHDH Local が起動する
-- [ ] ブラウザから RHDH Local の UI にアクセスできる
-- [ ] カスタムテンプレートのカタログ登録方法が確立されている
-- [ ] 手順が README に記載されている
+- [x] `podman compose up` で RHDH Local が起動する
+- [x] ブラウザから RHDH Local の UI にアクセスできる
+- [x] カスタムテンプレートのカタログ登録方法が確立されている
+- [x] 手順が README に記載されている
 
 ## 受け入れ条件の検証方法
 
 | 受け入れ条件 | 検証方法 | 対応するシナリオ |
 |-------------|---------|----------------|
-| <!-- 着手時に記入 --> | | |
+| `podman compose up` で RHDH Local が起動する | 自動テスト | podman compose up で RHDH Local が起動する |
+| ブラウザから RHDH Local の UI にアクセスできる | 自動テスト | ブラウザから RHDH Local の UI にアクセスできる |
+| カスタムテンプレートのカタログ登録方法が確立されている | 手動確認 | — |
+| 手順が README に記載されている | 自動テスト | セットアップ手順が README に記載されている |
 
 ## 想定する成果物
 
-- `compose.yaml`（Podman 用）
+- `rhdh-local/compose.yaml`（公式リポジトリ clone、ローカル管理）
 - `README.md`（セットアップ手順）
 
 ## 完了証跡
 
-<!-- PBI 完了時に記入。このセクションが空の状態で「完了」にしてはならない -->
-- テスト実行結果:
-- 確認日時:
+- テスト実行結果: 4 scenarios, 全ステップ passed（11.8s）
+- 確認日時: 2026-07-05
 - 備考:
+  - AC3（カスタムテンプレートのカタログ登録方法の確立）は手動確認。README.md にローカルファイル / GitHub URL 両方の登録手順を記載済み
+  - compose.yaml は公式 rhdh-local リポジトリを clone して使用（`rhdh-local/` は `.gitignore` でローカル管理）
+  - Playwright ブラウザバージョン更新が必要だった（`npx playwright install chromium`）
+- 関連 ADR: [ADR-0001](../adr/0001-clone-rhdh-local-repository.md)

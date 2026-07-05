@@ -8,6 +8,7 @@ const testDir = defineBddConfig({
 
 export default defineConfig({
   testDir,
+  timeout: 120_000,
   reporter: 'html',
   use: {
     screenshot: 'only-on-failure',

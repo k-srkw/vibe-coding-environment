@@ -24,6 +24,9 @@ blob-report/
 .DS_Store
 Thumbs.db
 
+# RHDH Local (cloned repository, local only)
+rhdh-local/
+
 # Environment / Secrets
 .env
 .env.*
