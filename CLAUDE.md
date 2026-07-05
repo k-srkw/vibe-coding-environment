@@ -25,6 +25,13 @@ MVP の定義と Product Backlog Items は [docs/product-backlog/](docs/product-
 
 PBI 実装時の設計判断は [docs/adr/](docs/adr/README.md) に記録する。詳細は ADR README を参照。
 
+## セキュリティ
+
+- `.env` ファイルには秘密情報（パスワード、API キー、トークン等）が含まれる可能性がある
+- `.claude/settings.json` の deny ルールにより、`.env` / `.env.*` / `**/*.env` の Read はブロックされている
+- `.env` の内容が必要な場合は、ユーザーが必要な箇所だけを手動で共有すること
+- 秘密情報をコード・コミットメッセージ・出力に含めないこと
+
 ## PBI 完了ルール (Definition of Done)
 
 **以下のルールは厳守。例外は認めない。**
