@@ -21,6 +21,10 @@ MVP の定義と Product Backlog Items は [docs/product-backlog/](docs/product-
 
 各 PBI は独立したファイルとして管理されており、個別に Plan → 実装できる。PBI に着手する際は該当ファイルを読み込み、依存関係・受け入れ条件を確認してから進めること。
 
+## ADR（Architecture Decision Records）
+
+PBI 実装時の設計判断は [docs/adr/](docs/adr/README.md) に記録する。詳細は ADR README を参照。
+
 ## PBI 完了ルール (Definition of Done)
 
 **以下のルールは厳守。例外は認めない。**
