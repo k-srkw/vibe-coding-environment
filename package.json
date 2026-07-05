@@ -1,0 +1,15 @@
+{
+  "name": "vibe-coding-environment",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "bddgen && playwright test",
+    "test:headed": "bddgen && playwright test --headed",
+    "test:ui": "bddgen && playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "playwright-bdd": "^9.2.0",
+    "typescript": "^5.7.0"
+  }
+}
