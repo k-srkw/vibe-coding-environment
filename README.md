@@ -24,11 +24,82 @@ podman compose up -d
 
 初回はコンテナイメージのダウンロードに数分かかります。
 
-### 3. UI アクセス
+### 3. GitHub 連携設定
 
-ブラウザで http://localhost:7007 にアクセスし、**Guest** としてログインします。
+GitHub からのカタログ読み込みや GitHub 認証を利用するには、以下の設定が必要です。
 
-### 4. 停止
+#### 3-1. GitHub App の作成
+
+GitHub で [GitHub App を新規登録](https://github.com/settings/apps/new) し、以下を設定します:
+
+| 項目 | 値 |
+|---|---|
+| Homepage URL | `http://localhost:7007` |
+| Authorization callback URL | `http://localhost:7007/api/auth/github/handler/frame` |
+| Permissions | Repository: `Checks`, `Contents`, `Metadata` (Read) / Organization: `Members` (Read) |
+
+作成後、以下の値を控えます:
+
+- **App ID**
+- **Client ID**
+- **Client Secret**（生成する）
+- **Private Key**（生成してダウンロード）
+
+#### 3-2. 認証情報ファイルの設定
+
+```bash
+cd rhdh-local
+cp configs/extra-files/github-app-credentials.example.yaml configs/extra-files/github-app-credentials.yaml
+```
+
+`github-app-credentials.yaml` に App ID、Client ID、Client Secret、Private Key を設定します。
+
+#### 3-3. 環境変数の設定
+
+`.env` ファイルに GitHub App の認証情報を追加します:
+
+```bash
+GITHUB_APP_CLIENT_ID=<your-client-id>
+GITHUB_APP_CLIENT_SECRET=<your-client-secret>
+GITHUB_APP_APP_ID=<your-app-id>
+GITHUB_APP_WEBHOOK_SECRET=<your-webhook-secret>
+GITHUB_APP_PRIVATE_KEY=<your-private-key>
+```
+
+#### 3-4. アプリケーション設定の有効化
+
+`app-config.local.yaml` で GitHub 認証・連携・カタログ検出を有効にします:
+
+```bash
+cp configs/app-config/app-config.local.example.yaml configs/app-config/app-config.local.yaml
+```
+
+主な設定項目:
+
+- `auth.providers.github` — GitHub ログイン
+- `integrations.github` — GitHub App による API 連携
+- `catalog.providers.github` — GitHub Organization からのカタログ自動検出
+
+詳細は [GitHub Auth Guide](rhdh-local/docs/rhdh-local-guide/github-auth.md) を参照してください。
+
+#### 3-5. RHDH Local の再起動
+
+```bash
+cd rhdh-local
+podman compose up -d --force-recreate
+```
+
+ログで起動を確認:
+
+```bash
+podman compose logs -f rhdh
+```
+
+### 4. UI アクセス
+
+ブラウザで http://localhost:7007 にアクセスします。GitHub 連携が設定済みの場合は **GitHub** アカウントでログインできます。未設定の場合は **Guest** としてログインします。
+
+### 5. 停止
 
 ```bash
 cd rhdh-local
@@ -38,6 +109,7 @@ podman compose down
 データを含めて完全にリセットする場合:
 
 ```bash
+cd rhdh-local
 podman compose down --volumes
 ```
 
