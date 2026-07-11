@@ -1,5 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import * as os from 'os';
+import { execSync } from 'child_process';
+import { SKELETON_DIR } from './constants';
 
 /**
  * Build a clean environment for subprocess npm/test commands.
@@ -54,4 +57,25 @@ export function replaceNunjucksVariables(
       }
     }
   }
+}
+
+/**
+ * Create a temporary directory with a prepared skeleton copy.
+ * Copies the skeleton, replaces Nunjucks variables, and runs npm install.
+ * Returns the path to the temporary directory.
+ */
+export function createSkeletonWorkDir(prefix = 'skeleton-test-'): string {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  fs.cpSync(SKELETON_DIR, dir, { recursive: true });
+  replaceNunjucksVariables(dir);
+  const cleanEnv = buildCleanEnv();
+  execSync('npm install', { cwd: dir, timeout: 120_000, stdio: 'pipe', env: cleanEnv });
+  return dir;
+}
+
+/**
+ * Remove a temporary directory created by createSkeletonWorkDir.
+ */
+export function cleanupWorkDir(dir: string): void {
+  fs.rmSync(dir, { recursive: true, force: true });
 }

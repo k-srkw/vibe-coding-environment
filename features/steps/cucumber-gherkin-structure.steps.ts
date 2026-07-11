@@ -1,10 +1,9 @@
 import { expect } from '@playwright/test';
 import { Given, When, Then } from '../support/fixtures';
 import { SKELETON_DIR } from '../support/constants';
-import { buildCleanEnv, replaceNunjucksVariables } from '../support/skeleton-helpers';
+import { buildCleanEnv, createSkeletonWorkDir, cleanupWorkDir } from '../support/skeleton-helpers';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as os from 'os';
 import { execSync } from 'child_process';
 
 const FEATURES_DIR = path.join(SKELETON_DIR, 'features');
@@ -73,25 +72,20 @@ Then('skeleton\\/package.json に test スクリプトが定義されている',
 let testDir: string;
 
 Given('skeleton をテスト用ディレクトリに展開している', async ({}) => {
-  testDir = fs.mkdtempSync(path.join(os.tmpdir(), 'skeleton-test-'));
-  fs.cpSync(SKELETON_DIR, testDir, { recursive: true });
-  replaceNunjucksVariables(testDir);
+  testDir = createSkeletonWorkDir();
 });
 
 When('テスト用ディレクトリで npm test を実行する', async ({}) => {
   const cleanEnv = buildCleanEnv();
   try {
-    execSync('npm install', { cwd: testDir, timeout: 120_000, stdio: 'pipe', env: cleanEnv });
     execSync('npm test', { cwd: testDir, timeout: 60_000, stdio: 'pipe', env: cleanEnv });
   } catch (error) {
-    // Cleanup on failure to avoid temp dir leaks
-    fs.rmSync(testDir, { recursive: true, force: true });
+    cleanupWorkDir(testDir);
     throw error;
   }
 });
 
 Then('テストが正常に完了する', async ({}) => {
   // execSync in the When step would have thrown on non-zero exit code.
-  // Cleanup the temp directory.
-  fs.rmSync(testDir, { recursive: true, force: true });
+  cleanupWorkDir(testDir);
 });

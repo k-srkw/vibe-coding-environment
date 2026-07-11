@@ -1,34 +1,35 @@
 import { expect } from '@playwright/test';
 import { Given, Then } from '../support/fixtures';
-import { SKELETON_DIR } from '../support/constants';
+import { SKELETON_DIR, SETUP_YML_PATH } from '../support/constants';
+import { Workflow, getAllSteps } from '../support/workflow-types';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 
-const SETUP_YML_PATH = path.join(
-  SKELETON_DIR,
-  '.github',
-  'workflows',
-  'setup.yml',
-);
-
-type WorkflowStep = { run?: string; uses?: string };
-type WorkflowJob = { name?: string; steps?: WorkflowStep[] };
-type Workflow = {
-  name?: string;
-  on?: Record<string, unknown>;
-  jobs?: Record<string, WorkflowJob>;
-};
-
 let workflow: Workflow;
 
-function getAllSteps(): WorkflowStep[] {
-  const jobs = workflow.jobs ?? {};
-  return Object.values(jobs).flatMap((job) => job.steps ?? []);
+function hasRunStepContaining(keyword: string): boolean {
+  return getAllSteps(workflow).some((step) => step.run?.includes(keyword));
 }
 
-function hasRunStepContaining(keyword: string): boolean {
-  return getAllSteps().some((step) => step.run?.includes(keyword));
+/**
+ * Check if a keyword appears in any run step directly,
+ * or in scripts referenced by the workflow (e.g. verify-setup.sh).
+ */
+function hasKeywordInWorkflow(keyword: string): boolean {
+  if (hasRunStepContaining(keyword)) return true;
+  for (const step of getAllSteps(workflow)) {
+    const run = step.run ?? '';
+    const scriptMatch = run.match(/bash\s+(scripts\/\S+)/);
+    if (scriptMatch) {
+      const scriptPath = path.join(SKELETON_DIR, scriptMatch[1]);
+      if (fs.existsSync(scriptPath)) {
+        const scriptContent = fs.readFileSync(scriptPath, 'utf-8');
+        if (scriptContent.includes(keyword)) return true;
+      }
+    }
+  }
+  return false;
 }
 
 function hasTrigger(triggerName: string): boolean {
@@ -65,11 +66,11 @@ Then('npm ci を実行するステップが含まれている', async ({}) => {
 // --- AC4: 環境構築の基本的な検証ステップが含まれている ---
 
 Then('ビルドを実行するステップが含まれている', async ({}) => {
-  expect(hasRunStepContaining('tsc')).toBe(true);
+  expect(hasKeywordInWorkflow('tsc')).toBe(true);
 });
 
 Then('テストを実行するステップが含まれている', async ({}) => {
-  expect(hasRunStepContaining('npm test')).toBe(true);
+  expect(hasKeywordInWorkflow('npm test')).toBe(true);
 });
 
 // --- AC5: 結果が GitHub Actions の UI で確認できる ---

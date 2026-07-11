@@ -43,7 +43,7 @@
 | 3 | [CLAUDE.md テンプレートの作成](pbi-03-claude-md-template.md) | 完了 | PBI-2 |
 | 4 | [Cucumber/Gherkin テスト構造の作成](pbi-04-cucumber-gherkin-structure.md) | 完了 | PBI-2 |
 | 5 | [GitHub Actions 環境構築自動化](pbi-05-github-actions-setup.md) | 完了 | PBI-2, PBI-4 |
-| 6 | [環境構築完了の自動検証](pbi-06-setup-verification.md) | 未着手 | PBI-5 |
+| 6 | [環境構築完了の自動検証](pbi-06-setup-verification.md) | 完了 | PBI-5 |
 | 7 | [GitHub Actions PR レビュー・CI](pbi-07-github-actions-ci.md) | 未着手 | PBI-4 |
 | 8 | [ATDD ワークフローの統合と文書化](pbi-08-atdd-workflow.md) | 未着手 | PBI-3, PBI-4, PBI-7 |
 | 9 | [E2E 統合テスト](pbi-09-e2e-integration-test.md) | 未着手 | PBI-1〜8 |
