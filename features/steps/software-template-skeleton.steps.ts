@@ -1,22 +1,19 @@
 import { expect } from '@playwright/test';
 import { Given, When, Then } from '../support/fixtures';
 import { test } from '../support/fixtures';
-import { PROJECT_ROOT, RHDH_URL, NAVIGATION_TIMEOUT, UI_ELEMENT_TIMEOUT, SCAFFOLDER_TASK_TIMEOUT } from '../support/constants';
+import { PROJECT_ROOT, RHDH_URL, NAVIGATION_TIMEOUT, UI_ELEMENT_TIMEOUT } from '../support/constants';
 import { navigateWithGuestLogin } from '../support/rhdh-helpers';
 import { registerTemplate } from '../support/rhdh-template-helper';
 import { githubHeaders, getGitHubOwner, removeCatalogLocation } from '../support/github-helpers';
+import { runScaffolderTask, type ScaffolderTaskResult } from '../support/scaffolder-helpers';
 import * as fs from 'fs';
 import * as path from 'path';
 
 const TEST_REPO_NAME = 'vibe-coding-test-pbi2';
 
-let scaffolderTaskResult: {
-  status: string;
-  owner: string;
-  repoName: string;
-  backstageToken: string;
-  error?: string;
-} | null = null;
+let taskResult: ScaffolderTaskResult | null = null;
+let taskOwner: string;
+let taskBackstageToken: string;
 
 // --- AC1 & AC4: template.yaml / skeleton ---
 
@@ -77,7 +74,7 @@ Given('GitHub 連携が設定されている', async ({}) => {
 });
 
 When('Scaffolder API でテンプレートを実行する', async ({ page }) => {
-  const owner = await getGitHubOwner();
+  taskOwner = await getGitHubOwner();
 
   let backstageToken: string | undefined;
   page.on('request', (request) => {
@@ -90,72 +87,29 @@ When('Scaffolder API でテンプレートを実行する', async ({ page }) => 
   await navigateWithGuestLogin(page, `${RHDH_URL}/create`);
   await page.waitForSelector('[class*="MuiCard-root"]', { timeout: NAVIGATION_TIMEOUT });
   expect(backstageToken).toBeDefined();
+  taskBackstageToken = backstageToken!;
 
-  await removeCatalogLocation(backstageToken!, owner, TEST_REPO_NAME);
+  await removeCatalogLocation(taskBackstageToken, taskOwner, TEST_REPO_NAME);
 
-  const createRes = await fetch(`${RHDH_URL}/api/scaffolder/v2/tasks`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': backstageToken!,
-    },
-    body: JSON.stringify({
-      templateRef: 'template:default/vibe-coding-environment',
-      values: {
-        projectName: 'PBI-2 テストプロジェクト',
-        owner,
-        repoName: TEST_REPO_NAME,
-      },
-    }),
-  });
-  if (!createRes.ok) {
-    throw new Error(`Scaffolder API returned ${createRes.status}: ${await createRes.text()}`);
-  }
-  const { id: taskId } = (await createRes.json()) as { id: string };
-
-  const start = Date.now();
-  let status = 'open';
-  let taskError: string | undefined;
-  while (Date.now() - start < SCAFFOLDER_TASK_TIMEOUT) {
-    const taskRes = await fetch(`${RHDH_URL}/api/scaffolder/v2/tasks/${taskId}`, {
-      headers: { Authorization: backstageToken! },
-    });
-    if (taskRes.ok) {
-      const taskData = (await taskRes.json()) as { status: string; steps?: Array<{ status: string; name: string; message?: string }> };
-      status = taskData.status;
-      if (status === 'failed') {
-        const failedSteps = (taskData.steps || []).filter((s) => s.status === 'failed');
-        taskError = failedSteps.map((s) => `${s.name}: ${s.message || 'unknown'}`).join('; ');
-      }
-      if (status === 'completed' || status === 'failed') break;
-    }
-    await new Promise((r) => setTimeout(r, 3_000));
-  }
-
-  scaffolderTaskResult = {
-    status,
-    owner,
-    repoName: TEST_REPO_NAME,
-    backstageToken: backstageToken!,
-    error: taskError,
-  };
+  taskResult = await runScaffolderTask(
+    'template:default/vibe-coding-environment',
+    { projectName: 'PBI-2 テストプロジェクト', owner: taskOwner, repoName: TEST_REPO_NAME },
+    taskBackstageToken,
+  );
 });
 
 Then('GitHub にリポジトリが作成される', async ({}) => {
-  expect(scaffolderTaskResult).not.toBeNull();
-  expect(scaffolderTaskResult!.status, `Scaffolder task failed: ${scaffolderTaskResult!.error}`).toBe('completed');
+  expect(taskResult).not.toBeNull();
+  expect(taskResult!.status, `Scaffolder task failed: ${taskResult!.error}`).toBe('completed');
 
-  const { owner, repoName } = scaffolderTaskResult!;
-  const res = await fetch(`https://api.github.com/repos/${owner}/${repoName}`, {
+  const res = await fetch(`https://api.github.com/repos/${taskOwner}/${TEST_REPO_NAME}`, {
     headers: githubHeaders(),
   });
   expect(res.status).toBe(200);
 });
 
 Then('作成されたリポジトリに skeleton のファイルが含まれている', async ({}) => {
-  const { owner, repoName, backstageToken } = scaffolderTaskResult!;
-
-  const res = await fetch(`https://api.github.com/repos/${owner}/${repoName}/contents`, {
+  const res = await fetch(`https://api.github.com/repos/${taskOwner}/${TEST_REPO_NAME}/contents`, {
     headers: githubHeaders(),
   });
   expect(res.status).toBe(200);
@@ -165,8 +119,8 @@ Then('作成されたリポジトリに skeleton のファイルが含まれて�
   expect(fileNames).toContain('package.json');
   expect(fileNames).toContain('README.md');
 
-  await removeCatalogLocation(backstageToken, owner, repoName);
-  await fetch(`https://api.github.com/repos/${owner}/${repoName}`, {
+  await removeCatalogLocation(taskBackstageToken, taskOwner, TEST_REPO_NAME);
+  await fetch(`https://api.github.com/repos/${taskOwner}/${TEST_REPO_NAME}`, {
     method: 'DELETE',
     headers: githubHeaders(),
   });
