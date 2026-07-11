@@ -2,5 +2,14 @@
   "name": "${{ values.repoName }}",
   "version": "0.1.0",
   "private": true,
-  "description": "${{ values.projectName }}"
+  "description": "${{ values.projectName }}",
+  "scripts": {
+    "test": "bddgen && playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.0.0",
+    "playwright-bdd": "^9.2.0",
+    "typescript": "^5.7.0"
+  }
 }

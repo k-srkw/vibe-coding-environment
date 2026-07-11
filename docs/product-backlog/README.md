@@ -41,7 +41,7 @@
 | 1 | [RHDH Local 環境のセットアップ](pbi-01-rhdh-local-setup.md) | 完了 | なし |
 | 2 | [Software Template の骨格作成](pbi-02-software-template-skeleton.md) | 完了 | PBI-1 |
 | 3 | [CLAUDE.md テンプレートの作成](pbi-03-claude-md-template.md) | 完了 | PBI-2 |
-| 4 | [Cucumber/Gherkin テスト構造の作成](pbi-04-cucumber-gherkin-structure.md) | 未着手 | PBI-2 |
+| 4 | [Cucumber/Gherkin テスト構造の作成](pbi-04-cucumber-gherkin-structure.md) | 完了 | PBI-2 |
 | 5 | [GitHub Actions 環境構築自動化](pbi-05-github-actions-setup.md) | 未着手 | PBI-2, PBI-4 |
 | 6 | [環境構築完了の自動検証](pbi-06-setup-verification.md) | 未着手 | PBI-5 |
 | 7 | [GitHub Actions PR レビュー・CI](pbi-07-github-actions-ci.md) | 未着手 | PBI-4 |

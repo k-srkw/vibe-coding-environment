@@ -28,7 +28,8 @@
 ├── src/                   # アプリケーションソースコード
 ├── features/              # Gherkin フィーチャーファイル
 │   ├── *.feature          # テストシナリオ
-│   └── steps/             # ステップ定義
+│   ├── steps/             # ステップ定義
+│   └── support/           # フィクスチャ・ヘルパー
 └── .github/
     └── workflows/         # GitHub Actions ワークフロー
 ```
