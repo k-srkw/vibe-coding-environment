@@ -1,0 +1,52 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: vibe-coding-environment
+  title: バイブコーディング環境
+  description: Claude Code によるバイブコーディング環境を作成します
+spec:
+  owner: user:default/guest
+  type: service
+  parameters:
+    - title: プロジェクト情報
+      required: [projectName, owner, repoName]
+      properties:
+        projectName:
+          title: プロジェクト名
+          type: string
+        owner:
+          title: オーナー
+          type: string
+        repoName:
+          title: リポジトリ名
+          type: string
+  steps:
+    - id: fetch
+      name: テンプレートの取得
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          projectName: ${{ parameters.projectName }}
+          owner: ${{ parameters.owner }}
+          repoName: ${{ parameters.repoName }}
+    - id: publish
+      name: GitHub リポジトリの作成
+      action: publish:github
+      input:
+        repoUrl: github.com?owner=${{ parameters.owner }}&repo=${{ parameters.repoName }}
+        description: ${{ parameters.projectName }}
+        defaultBranch: main
+    - id: register
+      name: カタログへの登録
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+  output:
+    links:
+      - title: リポジトリ
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: カタログ
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}

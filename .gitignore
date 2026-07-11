@@ -10,6 +10,7 @@ test-results/
 playwright-report/
 blob-report/
 .features-gen/
+.playwright-mcp/
 
 # Claude Code
 .claude/settings.local.json

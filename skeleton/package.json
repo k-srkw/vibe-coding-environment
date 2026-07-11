@@ -1,0 +1,6 @@
+{
+  "name": "${{ values.repoName }}",
+  "version": "0.1.0",
+  "private": true,
+  "description": "${{ values.projectName }}"
+}

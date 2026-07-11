@@ -5,6 +5,7 @@ RHDH Local の Software Template を使用して、Claude Code によるバイ�
 ## 前提条件
 
 - [Podman](https://podman.io/) + [podman-compose](https://github.com/containers/podman-compose)
+- [Node.js](https://nodejs.org/) v18 以上
 - Git
 
 ## RHDH Local のセットアップ
@@ -155,4 +156,45 @@ catalog:
       target: https://github.com/<org>/<repo>/blob/main/template.yaml
       rules:
         - allow: [Template]
+```
+
+## 開発
+
+### 依存パッケージのインストール
+
+```bash
+npm install
+npx playwright install --with-deps chromium
+```
+
+### テストの実行
+
+RHDH Local が起動している状態で実行します:
+
+```bash
+npm test
+```
+
+GitHub 連携テスト（テンプレート実行によるリポジトリ作成）を含める場合:
+
+```bash
+GITHUB_TOKEN=<your-personal-access-token> npm test
+```
+
+`GITHUB_TOKEN` が未設定の場合、GitHub 連携テストは自動的にスキップされます。
+
+## プロジェクト構成
+
+```
+├── template.yaml          # Software Template 定義
+├── skeleton/              # テンプレートから生成されるファイルの雛形
+├── features/              # ATDD テスト (Cucumber/Gherkin)
+│   ├── *.feature          #   Gherkin シナリオ
+│   ├── steps/             #   ステップ定義
+│   └── support/           #   ヘルパー・定数・フィクスチャ
+├── docs/
+│   ├── product-backlog/   # プロダクトバックログ (PBI)
+│   └── adr/               # Architecture Decision Records
+├── CLAUDE.md              # Claude Code 用プロジェクト指示
+└── rhdh-local/            # RHDH Local (git clone、.gitignore 対象)
 ```

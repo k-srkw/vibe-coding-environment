@@ -1,20 +1,9 @@
 import { expect } from '@playwright/test';
 import { Given, When, Then } from '../support/fixtures';
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-
-const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
-const RHDH_LOCAL_DIR = path.join(PROJECT_ROOT, 'rhdh-local');
-const RHDH_URL = 'http://localhost:7007';
-
-function composeExec(command: string): string {
-  return execSync(`podman compose ${command}`, {
-    cwd: RHDH_LOCAL_DIR,
-    encoding: 'utf-8',
-    timeout: 120_000,
-  });
-}
+import { PROJECT_ROOT, RHDH_LOCAL_DIR, RHDH_URL, NAVIGATION_TIMEOUT, GUEST_LOGIN_TIMEOUT } from '../support/constants';
+import { composeExec } from '../support/rhdh-helpers';
 
 // --- Scenario 1: podman compose up で RHDH Local が起動する ---
 
@@ -40,11 +29,11 @@ Given('RHDH Local が起動している', async ({}) => {
 });
 
 When('ブラウザで RHDH Local の URL にアクセスする', async ({ page }) => {
-  await page.goto(RHDH_URL, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+  await page.goto(RHDH_URL, { waitUntil: 'domcontentloaded', timeout: NAVIGATION_TIMEOUT });
 });
 
 Then('RHDH Local のトップページが表示される', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('body')).toBeVisible({ timeout: GUEST_LOGIN_TIMEOUT });
   const title = await page.title();
   expect(title.length).toBeGreaterThan(0);
 });
