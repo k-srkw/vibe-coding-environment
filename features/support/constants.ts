@@ -1,6 +1,7 @@
 import * as path from 'path';
 
 export const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
+export const SKELETON_DIR = path.join(PROJECT_ROOT, 'skeleton');
 export const RHDH_LOCAL_DIR = path.join(PROJECT_ROOT, 'rhdh-local');
 export const RHDH_URL = 'http://localhost:7007';
 

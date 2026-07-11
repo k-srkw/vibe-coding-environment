@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { Given, When, Then } from '../support/fixtures';
 import { test } from '../support/fixtures';
-import { PROJECT_ROOT, RHDH_URL, NAVIGATION_TIMEOUT, UI_ELEMENT_TIMEOUT } from '../support/constants';
+import { PROJECT_ROOT, SKELETON_DIR, RHDH_URL, NAVIGATION_TIMEOUT, UI_ELEMENT_TIMEOUT } from '../support/constants';
 import { navigateWithGuestLogin } from '../support/rhdh-helpers';
 import { registerTemplate } from '../support/rhdh-template-helper';
 import { githubHeaders, getGitHubOwner, removeCatalogLocation } from '../support/github-helpers';
@@ -129,12 +129,10 @@ Then('作成されたリポジトリに skeleton のファイルが含まれて�
 // --- AC4: skeleton ディレクトリ ---
 
 Then('skeleton ディレクトリが存在する', async ({}) => {
-  const skeletonDir = path.join(PROJECT_ROOT, 'skeleton');
-  expect(fs.existsSync(skeletonDir)).toBe(true);
+  expect(fs.existsSync(SKELETON_DIR)).toBe(true);
 });
 
 Then('skeleton ディレクトリにファイルが含まれている', async ({}) => {
-  const skeletonDir = path.join(PROJECT_ROOT, 'skeleton');
-  const files = fs.readdirSync(skeletonDir);
+  const files = fs.readdirSync(SKELETON_DIR);
   expect(files.length).toBeGreaterThan(0);
 });
