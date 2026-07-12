@@ -48,7 +48,22 @@
 | 8 | [ATDD ワークフローの統合と文書化](pbi-08-atdd-workflow.md) | 完了 | PBI-3, PBI-4, PBI-7 |
 | 9 | [E2E 統合テスト](pbi-09-e2e-integration-test.md) | 完了 | PBI-1〜8 |
 
+### Sprint 2: レトロスペクティブ改善
+
+| # | PBI | ステータス | 依存 | カテゴリ |
+|---|-----|-----------|------|---------|
+| 10 | [PBI ワークフロースキルの Phase 番号修正](pbi-10-workflow-phase-numbering.md) | 未着手 | なし | ワークフロー |
+| 11 | [DoD に ADR 要否判断の記録を必須化](pbi-11-dod-adr-requirement.md) | 未着手 | なし | ワークフロー |
+| 12 | [workflow-state.ts を Playwright fixture に移行](pbi-12-workflow-state-fixture.md) | 未着手 | なし | アーキテクチャ |
+| 13 | [skeleton の CLAUDE.md から src/ 参照を修正](pbi-13-skeleton-src-reference.md) | 未着手 | なし | アーキテクチャ |
+| 14 | [RHDH Local の認証情報管理を環境変数ベースに統一](pbi-14-rhdh-credential-management.md) | 未着手 | なし | アーキテクチャ |
+| 15 | [テンプレートパラメータ境界値テスト](pbi-15-template-parameter-boundary-test.md) | 未着手 | なし | テスト品質 |
+| 16 | [生成プロジェクトの動的行動テスト強化](pbi-16-behavioral-test-enhancement.md) | 未着手 | なし | テスト品質 |
+| 17 | [@github テストの CI 実行環境整備](pbi-17-github-ci-e2e-setup.md) | 未着手 | なし | テスト品質 |
+
 ## 依存関係
+
+### Sprint 1: MVP
 
 ```
 PBI-1 (依存なし) ← 最初に着手可能
@@ -58,6 +73,12 @@ PBI-1 (依存なし) ← 最初に着手可能
        │    ├→ PBI-5 → PBI-6
        │    └→ PBI-7 ─┘
        └──────────────────→ PBI-9
+```
+
+### Sprint 2: レトロスペクティブ改善
+
+```
+PBI-10〜17 は全て依存なし（任意の順序で着手可能）
 ```
 
 ## Definition of Done (DoD)
