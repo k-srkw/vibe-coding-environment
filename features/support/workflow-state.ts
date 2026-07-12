@@ -49,6 +49,11 @@ export function hasKeywordInWorkflow(keyword: string): boolean {
   return false;
 }
 
+/** Check if any step uses an action containing the given keyword. */
+export function hasUsesStepContaining(keyword: string): boolean {
+  return getAllSteps(workflow).some((step) => step.uses?.includes(keyword));
+}
+
 /** Check if the specified trigger is configured on the workflow. */
 export function hasTrigger(triggerName: string): boolean {
   return workflow.on != null && triggerName in workflow.on;

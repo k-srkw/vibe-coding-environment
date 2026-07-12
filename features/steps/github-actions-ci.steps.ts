@@ -1,12 +1,12 @@
 import { expect } from '@playwright/test';
 import { Given, Then } from '../support/fixtures';
 import { CI_YML_PATH } from '../support/constants';
-import { Workflow, getAllSteps } from '../support/workflow-types';
+import { Workflow } from '../support/workflow-types';
 import {
   setWorkflow,
-  getWorkflow,
   hasTrigger,
   hasKeywordInWorkflow,
+  hasUsesStepContaining,
 } from '../support/workflow-state';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
@@ -37,9 +37,5 @@ Then('型チェックを実行するステップが含まれている', async ({
 // --- AC6: テスト失敗時にわかりやすいエラーレポートが出る ---
 
 Then('テスト結果レポートをアップロードするステップが含まれている', async ({}) => {
-  const steps = getAllSteps(getWorkflow());
-  const hasUploadStep = steps.some((step) =>
-    step.uses?.includes('upload-artifact'),
-  );
-  expect(hasUploadStep).toBe(true);
+  expect(hasUsesStepContaining('upload-artifact')).toBe(true);
 });

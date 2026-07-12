@@ -8,6 +8,8 @@ export const RHDH_URL = 'http://localhost:7007';
 export const SETUP_YML_PATH = path.join(SKELETON_DIR, '.github', 'workflows', 'setup.yml');
 export const VERIFY_SCRIPT_PATH = path.join(SKELETON_DIR, 'scripts', 'verify-setup.sh');
 export const CI_YML_PATH = path.join(SKELETON_DIR, '.github', 'workflows', 'ci.yml');
+export const TEMPLATE_TEST_YML_PATH = path.join(PROJECT_ROOT, '.github', 'workflows', 'test.yml');
+export const BRANCH_PROTECTION_GUIDE_PATH = path.join(PROJECT_ROOT, 'docs', 'branch-protection-guide.md');
 
 // skeleton 内の主要ディレクトリ・ファイルパス
 export const SKELETON_CLAUDE_MD_PATH = path.join(SKELETON_DIR, 'CLAUDE.md');
