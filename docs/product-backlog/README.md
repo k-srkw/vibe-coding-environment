@@ -74,7 +74,6 @@ Product Goal 達成に対する **Impact（貢献度）** と **Effort（コス�
 
 | 優先度 | # | PBI | ステータス | Impact | Effort |
 |--------|---|-----|-----------|--------|--------|
-| 1 | 21 | [skeleton CI テンプレートに Playwright インストール追加](pbi-21-skeleton-ci-playwright-install.md) | 未着手 | H | S |
 | 2 | 20 | [テンプレートプロジェクトの CI/CD パイプライン追加](pbi-20-template-project-ci.md) | 未着手 | H | M |
 | 3 | 10 | [PBI ワークフロースキルの Phase 番号修正](pbi-10-workflow-phase-numbering.md) | 未着手 | M | S |
 | 3 | 11 | [DoD に ADR 要否判断の記録を必須化](pbi-11-dod-adr-requirement.md) | 未着手 | M | S |
@@ -103,6 +102,7 @@ Product Goal 達成に対する **Impact（貢献度）** と **Effort（コス�
 | 8 | [ATDD ワークフローの統合と文書化](pbi-08-atdd-workflow.md) | 完了 | H | M |
 | 9 | [E2E 統合テスト](pbi-09-e2e-integration-test.md) | 完了 | H | L |
 | 13 | [skeleton の CLAUDE.md から src/ 参照を修正](pbi-13-skeleton-src-reference.md) | 完了 | H | S |
+| 21 | [skeleton CI テンプレートに Playwright インストール追加](pbi-21-skeleton-ci-playwright-install.md) | 完了 | H | S |
 
 ## 依存関係
 
