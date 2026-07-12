@@ -1,6 +1,6 @@
 /** Types for parsed GitHub Actions workflow YAML */
 
-export type WorkflowStep = { run?: string; name?: string; uses?: string };
+export type WorkflowStep = { run?: string; name?: string; uses?: string; with?: Record<string, unknown>; if?: string };
 export type WorkflowJob = { name?: string; steps?: WorkflowStep[] };
 export type Workflow = {
   name?: string;
