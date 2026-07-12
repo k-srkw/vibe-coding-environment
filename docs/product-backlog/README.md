@@ -86,6 +86,7 @@ Product Goal 達成に対する **Impact（貢献度）** と **Effort（コス�
 | 5 | 22 | [CLAUDE.md にアーキテクチャ概要セクションを追加](pbi-22-claude-md-architecture-section.md) | 未着手 | M | M |
 | 6 | 24 | [スキル間コンテキスト共有メカニズムの設計](pbi-24-skill-context-sharing.md) | 未着手 | M | L |
 | 7 | 23 | [settings.local.json のクリーンアップ](pbi-23-settings-local-cleanup.md) | 未着手 | L | S |
+| 7 | 25 | [skeleton の @types/node バージョンをルートプロジェクトと統一](pbi-25-skeleton-types-node-update.md) | 未着手 | L | S |
 
 ### 完了済み
 
