@@ -21,15 +21,19 @@
 
 ```
 .
+├── .gitignore             # Git 除外設定
 ├── CLAUDE.md              # プロジェクト指示書（このファイル）
 ├── README.md              # プロジェクト概要
 ├── package.json           # 依存関係・スクリプト定義
 ├── catalog-info.yaml      # Backstage カタログ情報
-├── src/                   # アプリケーションソースコード
+├── tsconfig.json          # TypeScript 設定
+├── playwright.config.ts   # Playwright テスト設定
 ├── features/              # Gherkin フィーチャーファイル
 │   ├── *.feature          # テストシナリオ
 │   ├── steps/             # ステップ定義
 │   └── support/           # フィクスチャ・ヘルパー
+├── scripts/               # ユーティリティスクリプト
+│   └── verify-setup.sh   # 環境構築検証スクリプト
 └── .github/
     └── workflows/         # GitHub Actions ワークフロー
 ```
