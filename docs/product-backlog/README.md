@@ -74,7 +74,6 @@ Product Goal 達成に対する **Impact（貢献度）** と **Effort（コス�
 
 | 優先度 | # | PBI | ステータス | Impact | Effort |
 |--------|---|-----|-----------|--------|--------|
-| 3 | 11 | [DoD に ADR 要否判断の記録を必須化](pbi-11-dod-adr-requirement.md) | 未着手 | M | S |
 | 3 | 18 | [Feature branch + PR ワークフローの導入](pbi-18-feature-branch-workflow.md) | 未着手 | M | S |
 | 4 | 17 | [@github テストの CI 実行環境整備](pbi-17-github-ci-e2e-setup.md) | 未着手 | H | L |
 | 5 | 12 | [workflow-state.ts を Playwright fixture に移行](pbi-12-workflow-state-fixture.md) | 未着手 | M | M |
@@ -104,6 +103,7 @@ Product Goal 達成に対する **Impact（貢献度）** と **Effort（コス�
 | 20 | [テンプレートプロジェクトの CI/CD パイプライン追加](pbi-20-template-project-ci.md) | 完了 | H | M |
 | 21 | [skeleton CI テンプレートに Playwright インストール追加](pbi-21-skeleton-ci-playwright-install.md) | 完了 | H | S |
 | 10 | [PBI ワークフロースキルの Phase 番号修正](pbi-10-workflow-phase-numbering.md) | 完了 | M | S |
+| 11 | [DoD に ADR 要否判断の記録を必須化](pbi-11-dod-adr-requirement.md) | 完了 | M | S |
 
 ## 依存関係
 
