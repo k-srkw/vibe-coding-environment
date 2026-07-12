@@ -2,9 +2,9 @@ import { expect } from '@playwright/test';
 import { Given, When, Then } from '../support/fixtures';
 import { test } from '../support/fixtures';
 import { PROJECT_ROOT, SKELETON_DIR, RHDH_URL, NAVIGATION_TIMEOUT, UI_ELEMENT_TIMEOUT } from '../support/constants';
-import { navigateWithGuestLogin } from '../support/rhdh-helpers';
+import { navigateWithGuestLogin, captureBackstageToken } from '../support/rhdh-helpers';
 import { registerTemplate } from '../support/rhdh-template-helper';
-import { githubHeaders, getGitHubOwner, removeCatalogLocation } from '../support/github-helpers';
+import { getGitHubOwner, checkRepoExists, getRepoFileNames, deleteGitHubRepo, removeCatalogLocation } from '../support/github-helpers';
 import { runScaffolderTask, type ScaffolderTaskResult } from '../support/scaffolder-helpers';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -63,31 +63,12 @@ Given('GitHub 連携が設定されている', async ({}) => {
   test.skip(!process.env.GITHUB_TOKEN, 'GITHUB_TOKEN が設定されていないためスキップ');
 
   const owner = await getGitHubOwner();
-  try {
-    await fetch(`https://api.github.com/repos/${owner}/${TEST_REPO_NAME}`, {
-      method: 'DELETE',
-      headers: githubHeaders(),
-    });
-  } catch {
-    // Repo may not exist
-  }
+  await deleteGitHubRepo(owner, TEST_REPO_NAME);
 });
 
 When('Scaffolder API でテンプレートを実行する', async ({ page }) => {
   taskOwner = await getGitHubOwner();
-
-  let backstageToken: string | undefined;
-  page.on('request', (request) => {
-    const auth = request.headers()['authorization'];
-    if (auth && request.url().includes('/api/')) {
-      backstageToken = auth;
-    }
-  });
-
-  await navigateWithGuestLogin(page, `${RHDH_URL}/create`);
-  await page.waitForSelector('[class*="MuiCard-root"]', { timeout: NAVIGATION_TIMEOUT });
-  expect(backstageToken).toBeDefined();
-  taskBackstageToken = backstageToken!;
+  taskBackstageToken = await captureBackstageToken(page);
 
   await removeCatalogLocation(taskBackstageToken, taskOwner, TEST_REPO_NAME);
 
@@ -102,28 +83,16 @@ Then('GitHub にリポジトリが作成される', async ({}) => {
   expect(taskResult).not.toBeNull();
   expect(taskResult!.status, `Scaffolder task failed: ${taskResult!.error}`).toBe('completed');
 
-  const res = await fetch(`https://api.github.com/repos/${taskOwner}/${TEST_REPO_NAME}`, {
-    headers: githubHeaders(),
-  });
-  expect(res.status).toBe(200);
+  expect(await checkRepoExists(taskOwner, TEST_REPO_NAME)).toBe(true);
 });
 
 Then('作成されたリポジトリに skeleton のファイルが含まれている', async ({}) => {
-  const res = await fetch(`https://api.github.com/repos/${taskOwner}/${TEST_REPO_NAME}/contents`, {
-    headers: githubHeaders(),
-  });
-  expect(res.status).toBe(200);
-
-  const contents = (await res.json()) as Array<{ name: string }>;
-  const fileNames = contents.map((f) => f.name);
+  const fileNames = await getRepoFileNames(taskOwner, TEST_REPO_NAME);
   expect(fileNames).toContain('package.json');
   expect(fileNames).toContain('README.md');
 
   await removeCatalogLocation(taskBackstageToken, taskOwner, TEST_REPO_NAME);
-  await fetch(`https://api.github.com/repos/${taskOwner}/${TEST_REPO_NAME}`, {
-    method: 'DELETE',
-    headers: githubHeaders(),
-  });
+  await deleteGitHubRepo(taskOwner, TEST_REPO_NAME);
 });
 
 // --- AC4: skeleton ディレクトリ ---

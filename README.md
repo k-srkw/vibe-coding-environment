@@ -181,7 +181,47 @@ GitHub 連携テスト（テンプレート実行によるリポジトリ作成�
 GITHUB_TOKEN=<your-personal-access-token> npm test
 ```
 
+`GITHUB_TOKEN` には以下の権限が必要です:
+- `repo`（リポジトリの作成・削除）
+- `workflow`（GitHub Actions ワークフローファイルの push）
+- `delete_repo`（テスト後のクリーンアップ）
+
 `GITHUB_TOKEN` が未設定の場合、GitHub 連携テストは自動的にスキップされます。
+
+## E2E テスト
+
+テンプレート実行からリポジトリ作成・環境構築完了までの通し検証を行います。
+
+### 前提条件
+
+- RHDH Local が起動していること（`podman compose up -d`）
+- テンプレートが登録されていること
+- `GITHUB_TOKEN` 環境変数に GitHub Personal Access Token が設定されていること
+  - 必要な権限: `repo`、`workflow`、`delete_repo`
+
+### 実行方法
+
+```bash
+GITHUB_TOKEN=<your-token> npm test
+```
+
+E2E テストは `@github` タグが付いたシナリオを含み、実際に GitHub リポジトリを作成して検証します。
+`GITHUB_TOKEN` が未設定の場合、`@github` シナリオは自動的にスキップされます。
+
+### テスト内容
+
+1. Scaffolder API でテンプレートを実行し、GitHub リポジトリが作成されることを確認
+2. 作成されたリポジトリに MVP 構成ファイル（CLAUDE.md、Cucumber テスト構造、GitHub Actions ワークフロー）が含まれていることを確認
+3. テスト完了後、作成されたリポジトリは自動的にクリーンアップされます
+
+### 手動確認項目
+
+自動テストでカバーできない以下の項目は、手動で確認してください:
+
+1. GitHub リポジトリの Actions タブで setup ワークフローが成功していることを確認
+2. setup ワークフローのログで verify-setup ステップが成功していることを確認
+3. 作成されたリポジトリで ATDD ワークフロー（Gherkin でテスト作成 → Claude Code で実装 → PR 作成）を実行
+4. PR 作成後、CI ワークフローがトリガーされ、テスト結果が PR に表示されることを確認
 
 ## プロジェクト構成
 

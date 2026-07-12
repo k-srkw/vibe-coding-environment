@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { Given, When, Then } from '../support/fixtures';
 import * as fs from 'fs';
 import * as path from 'path';
-import { PROJECT_ROOT, RHDH_LOCAL_DIR, RHDH_URL, NAVIGATION_TIMEOUT, GUEST_LOGIN_TIMEOUT } from '../support/constants';
+import { PROJECT_ROOT, RHDH_LOCAL_DIR, RHDH_URL, NAVIGATION_TIMEOUT, GUEST_LOGIN_TIMEOUT, readProjectReadme } from '../support/constants';
 import { composeExec } from '../support/rhdh-helpers';
 
 // --- Scenario 1: podman compose up で RHDH Local が起動する ---
@@ -46,12 +46,11 @@ Given('README.md が存在する', async ({}) => {
 });
 
 Then('README に RHDH Local の起動手順が記載されている', async ({}) => {
-  const content = fs.readFileSync(path.join(PROJECT_ROOT, 'README.md'), 'utf-8');
-  expect(content).toContain('podman compose up');
+  expect(readProjectReadme()).toContain('podman compose up');
 });
 
 Then('README にカスタムテンプレートの登録手順が記載されている', async ({}) => {
-  const content = fs.readFileSync(path.join(PROJECT_ROOT, 'README.md'), 'utf-8');
+  const content = readProjectReadme();
   expect(content).toContain('catalog');
   expect(content).toContain('template.yaml');
 });

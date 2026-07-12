@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+import { expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import { RHDH_LOCAL_DIR, RHDH_URL, RHDH_READY_TIMEOUT, NAVIGATION_TIMEOUT, GUEST_LOGIN_TIMEOUT, COMPOSE_EXEC_TIMEOUT } from './constants';
 
@@ -22,6 +23,25 @@ export async function waitForRhdh(timeoutMs = RHDH_READY_TIMEOUT): Promise<void>
     await new Promise((resolve) => setTimeout(resolve, 2_000));
   }
   throw new Error(`RHDH did not become ready within ${timeoutMs}ms`);
+}
+
+/**
+ * Backstage API リクエストから認証トークンをキャプチャする。
+ * ゲストログインで /create ページへ遷移し、API リクエストの Authorization ヘッダーを取得する。
+ */
+export async function captureBackstageToken(page: Page): Promise<string> {
+  let backstageToken: string | undefined;
+  page.on('request', (request) => {
+    const auth = request.headers()['authorization'];
+    if (auth && request.url().includes('/api/')) {
+      backstageToken = auth;
+    }
+  });
+
+  await navigateWithGuestLogin(page, `${RHDH_URL}/create`);
+  await page.waitForSelector('[class*="MuiCard-root"]', { timeout: NAVIGATION_TIMEOUT });
+  expect(backstageToken).toBeDefined();
+  return backstageToken!;
 }
 
 export async function navigateWithGuestLogin(page: Page, targetUrl: string): Promise<void> {

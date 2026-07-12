@@ -23,6 +23,30 @@ function writeAppConfig(config: Record<string, unknown>): void {
 
 // --- Template file copy ---
 
+function collectFiles(dir: string): string[] {
+  const result: string[] = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      result.push(...collectFiles(full));
+    } else {
+      result.push(full);
+    }
+  }
+  return result.sort();
+}
+
+function skeletonMatchesDest(src: string, dest: string): boolean {
+  if (!fs.existsSync(dest)) return false;
+  const srcFiles = collectFiles(src).map((f) => path.relative(src, f));
+  const destFiles = collectFiles(dest).map((f) => path.relative(dest, f));
+  if (srcFiles.length !== destFiles.length) return false;
+  return srcFiles.every((rel, i) => {
+    if (rel !== destFiles[i]) return false;
+    return fs.readFileSync(path.join(src, rel), 'utf-8') === fs.readFileSync(path.join(dest, rel), 'utf-8');
+  });
+}
+
 function copyTemplateFiles(): boolean {
   const templateSrc = path.join(PROJECT_ROOT, 'template.yaml');
   const templateDest = path.join(CATALOG_ENTITIES_DIR, 'template.yaml');
@@ -32,13 +56,15 @@ function copyTemplateFiles(): boolean {
   if (fs.existsSync(templateDest)) {
     const srcContent = fs.readFileSync(templateSrc, 'utf-8');
     const destContent = fs.readFileSync(templateDest, 'utf-8');
-    if (srcContent === destContent && fs.existsSync(skeletonDest)) {
+    if (srcContent === destContent && skeletonMatchesDest(skeletonSrc, skeletonDest)) {
       return false;
     }
   }
 
   fs.copyFileSync(templateSrc, templateDest);
-
+  if (fs.existsSync(skeletonDest)) {
+    fs.rmSync(skeletonDest, { recursive: true });
+  }
   fs.cpSync(skeletonSrc, skeletonDest, { recursive: true });
   return true;
 }

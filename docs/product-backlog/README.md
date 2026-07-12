@@ -46,7 +46,7 @@
 | 6 | [環境構築完了の自動検証](pbi-06-setup-verification.md) | 完了 | PBI-5 |
 | 7 | [GitHub Actions PR レビュー・CI](pbi-07-github-actions-ci.md) | 完了 | PBI-4 |
 | 8 | [ATDD ワークフローの統合と文書化](pbi-08-atdd-workflow.md) | 完了 | PBI-3, PBI-4, PBI-7 |
-| 9 | [E2E 統合テスト](pbi-09-e2e-integration-test.md) | 未着手 | PBI-1〜8 |
+| 9 | [E2E 統合テスト](pbi-09-e2e-integration-test.md) | 完了 | PBI-1〜8 |
 
 ## 依存関係
 

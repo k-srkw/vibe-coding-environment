@@ -24,6 +24,14 @@ export function readSkeletonClaudeMd(): string {
   return fs.readFileSync(SKELETON_CLAUDE_MD_PATH, 'utf-8');
 }
 
+/**
+ * プロジェクトルートの README.md の内容を文字列として読み込む。
+ * 複数のステップ定義ファイルから共通で使用される。
+ */
+export function readProjectReadme(): string {
+  return fs.readFileSync(path.join(PROJECT_ROOT, 'README.md'), 'utf-8');
+}
+
 export const RHDH_READY_TIMEOUT = 90_000;
 export const NAVIGATION_TIMEOUT = 30_000;
 export const GUEST_LOGIN_TIMEOUT = 10_000;
