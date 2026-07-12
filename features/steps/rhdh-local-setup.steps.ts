@@ -1,17 +1,14 @@
 import { expect } from '@playwright/test';
-import { test } from '../support/fixtures';
-import { Given, When, Then } from '../support/fixtures';
+import { test, Given, When, Then } from '../support/fixtures';
 import * as fs from 'fs';
 import * as path from 'path';
-import { PROJECT_ROOT, RHDH_LOCAL_DIR, RHDH_URL, NAVIGATION_TIMEOUT, GUEST_LOGIN_TIMEOUT, readProjectReadme } from '../support/constants';
+import { PROJECT_ROOT, RHDH_URL, NAVIGATION_TIMEOUT, GUEST_LOGIN_TIMEOUT, readProjectReadme, isRhdhAvailable } from '../support/constants';
 import { composeExec } from '../support/rhdh-helpers';
 
 // --- Scenario 1: podman compose up で RHDH Local が起動する ---
 
 Given('compose.yaml が存在する', async ({}) => {
-  const composePath = path.join(RHDH_LOCAL_DIR, 'compose.yaml');
-  test.skip(!fs.existsSync(composePath), 'RHDH Local 環境が利用できないためスキップ');
-  expect(fs.existsSync(composePath)).toBe(true);
+  test.skip(!isRhdhAvailable(), 'RHDH Local 環境が利用できないためスキップ');
 });
 
 When('podman compose up を実行する', async ({}) => {
@@ -26,7 +23,7 @@ Then('RHDH Local のコンテナが起動している', async ({}) => {
 // --- Scenario 2: ブラウザから RHDH Local の UI にアクセスできる ---
 
 Given('RHDH Local が起動している', async ({}) => {
-  test.skip(!fs.existsSync(path.join(RHDH_LOCAL_DIR, 'compose.yaml')), 'RHDH Local 環境が利用できないためスキップ');
+  test.skip(!isRhdhAvailable(), 'RHDH Local 環境が利用できないためスキップ');
   const output = composeExec('ps');
   expect(output).toContain('rhdh');
 });

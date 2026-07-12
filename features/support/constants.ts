@@ -4,6 +4,7 @@ import * as path from 'path';
 export const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
 export const SKELETON_DIR = path.join(PROJECT_ROOT, 'skeleton');
 export const RHDH_LOCAL_DIR = path.join(PROJECT_ROOT, 'rhdh-local');
+export const RHDH_COMPOSE_PATH = path.join(RHDH_LOCAL_DIR, 'compose.yaml');
 export const RHDH_URL = 'http://localhost:7007';
 export const SETUP_YML_PATH = path.join(SKELETON_DIR, '.github', 'workflows', 'setup.yml');
 export const VERIFY_SCRIPT_PATH = path.join(SKELETON_DIR, 'scripts', 'verify-setup.sh');
@@ -32,6 +33,10 @@ export function readSkeletonClaudeMd(): string {
  */
 export function readProjectReadme(): string {
   return fs.readFileSync(path.join(PROJECT_ROOT, 'README.md'), 'utf-8');
+}
+
+export function isRhdhAvailable(): boolean {
+  return fs.existsSync(RHDH_COMPOSE_PATH);
 }
 
 export const RHDH_READY_TIMEOUT = 90_000;

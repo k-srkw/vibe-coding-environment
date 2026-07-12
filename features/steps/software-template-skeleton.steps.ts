@@ -1,7 +1,6 @@
 import { expect } from '@playwright/test';
-import { Given, When, Then } from '../support/fixtures';
-import { test } from '../support/fixtures';
-import { PROJECT_ROOT, SKELETON_DIR, RHDH_LOCAL_DIR, RHDH_URL, NAVIGATION_TIMEOUT, UI_ELEMENT_TIMEOUT } from '../support/constants';
+import { test, Given, When, Then } from '../support/fixtures';
+import { PROJECT_ROOT, SKELETON_DIR, RHDH_URL, NAVIGATION_TIMEOUT, UI_ELEMENT_TIMEOUT, isRhdhAvailable } from '../support/constants';
 import { navigateWithGuestLogin, captureBackstageToken } from '../support/rhdh-helpers';
 import { registerTemplate } from '../support/rhdh-template-helper';
 import { getGitHubOwner, checkRepoExists, getRepoFileNames, deleteGitHubRepo, removeCatalogLocation } from '../support/github-helpers';
@@ -23,7 +22,7 @@ Given('template.yaml が存在する', async ({}) => {
 });
 
 Given('テンプレートが RHDH Local に登録されている', async ({}) => {
-  test.skip(!fs.existsSync(path.join(RHDH_LOCAL_DIR, 'compose.yaml')), 'RHDH Local 環境が利用できないためスキップ');
+  test.skip(!isRhdhAvailable(), 'RHDH Local 環境が利用できないためスキップ');
   await registerTemplate();
 });
 
