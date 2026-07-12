@@ -30,5 +30,10 @@
 
 ## 完了証跡
 - テスト実行結果: 52 シナリオ（50 passed, 2 skipped）、全件 Green
+- CI 実行結果: GitHub Actions 全ステップ success（run ID: 29186234720）
 - 確認日時: 2026-07-12
-- 備考: 新規 6 シナリオ追加（AC1〜AC4 に対応）。`hasUsesStepContaining()` ヘルパーを workflow-state.ts に共通化し、github-actions-ci.steps.ts でも再利用。
+- 備考:
+  - 新規 6 シナリオ追加（AC1〜AC4 に対応）
+  - `hasUsesStepContaining()` ヘルパーを workflow-state.ts に共通化
+  - 初回 CI で RHDH Local 依存テスト 6 件が失敗 → `isRhdhAvailable()` による条件スキップを追加して解消
+  - RHDH 可用性チェックを `constants.ts` の `isRhdhAvailable()` に集約（`rhdh-local-setup.steps.ts`、`software-template-skeleton.steps.ts` で共通利用）
